@@ -6,10 +6,13 @@ Made for people who aren't programmers!
 Go to the Releases tab, download the zip file named "VecEdit_<your os name\>"
 run the executable file inside.
 
+Use the "Import" button to import a save file.
+
+
 # Support
-Made for Linux,
-Compiled for Windows
-No mac support, I'm sorry I just can't support it. You can use the .py file, I guess.
+- Made on & for Linux
+- Should work for Windows
+- No mac support, I'm sorry I just can't support it. You can use the .py file, I guess.
 
 # Common issues
 Where do I report bugs?
