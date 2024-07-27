@@ -3,6 +3,8 @@ import json
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QTreeView, QInputDialog
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtUiTools import QUiLoader
+import os, shutil
+import gzip
 
 json_data = {}
 
@@ -23,9 +25,30 @@ class MainWindow(QMainWindow):
 	def load_json_data(self):
 		global json_data
 		file_dialog = QFileDialog(self)
-		file_path, _ = file_dialog.getOpenFileName(self, "Open JSON File", "", "JSON Files (*.json)")
+		file_path, _ = file_dialog.getOpenFileName(self, "Open SAV File", "", "SAV Files (*.sav)")
 		if file_path:
-			with open(file_path, 'r') as file:
+			temp_folder = "./vecedit_temp"
+			#create temp folder
+			if not os.path.exists(temp_folder):
+				os.makedirs(temp_folder)
+			
+			#create temporary gzip file path
+			#vecedit_temp/example----.gz
+			temp_gz_path = os.path.join(temp_folder, os.path.basename(file_path)[:-4] + '.gz')
+			print(f"gzpath is {temp_gz_path}")
+
+			#Copy main file as gz to temp
+			#vecedit_temp/example.gz from vec/saves/world_1.sav for example
+			shutil.copyfile(file_path, temp_gz_path)
+
+			#We want the JS to be the same name without the gz extension, so this strips the last 3 characters
+			#vecedit_temp/example
+			temp_json_path = temp_gz_path[:-3]
+			print(f"Json path is {temp_json_path}")
+			with gzip.open(temp_gz_path, 'rb') as file_in:
+				shutil.copyfileobj(file_in, open(temp_json_path, "wb"))
+			
+			with open(temp_json_path, 'r') as file:
 				json_data = json.load(file)
 				self.populate_tree_view(json_data)
 
@@ -157,10 +180,24 @@ class MainWindow(QMainWindow):
 		global json_data
 		self.update_json_data()
 		file_dialog = QFileDialog(self)
-		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", "", "JSON Files (*.json)")
+		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", "", "SAV Files (*.sav)")
 		if file_path:
-			with open(file_path, 'w') as file:
-				json.dump(json_data, file, separators=(',', ':'))
+			temp_folder = "vecedit_temp"
+			if not os.path.exists(temp_folder):
+				os.makedirs(temp_folder)
+			
+			temp_json_path = os.path.join(temp_folder, os.path.basename(file_path))
+			with open(temp_json_path, 'w') as file:
+				json.dump(json_data, file, indent=4)
+			
+			temp_gz_path = temp_json_path + '.gz'
+			with open(temp_json_path, 'rb') as file_in:
+				with gzip.open(temp_gz_path, 'wb') as file_out:
+					shutil.copyfileobj(file_in, file_out)
+			
+			with open(temp_gz_path, 'rb') as file_in:
+				with open(file_path, 'wb') as file_out:
+					shutil.copyfileobj(file_in, file_out)
 				
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
