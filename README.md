@@ -3,7 +3,7 @@ A save editor for Vectorio Remake written in Python.
 Made for people who aren't programmers!
 
 # How to use
-Go to the Releases tab, download the zip file named "VecEdit_<your os name\>"
+Go to the Releases tab, download the file named "VecEdit_<your os name\>"
 run the executable file inside.
 
 Use the "Import" button to import a save file.
