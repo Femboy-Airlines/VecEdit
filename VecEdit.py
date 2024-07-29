@@ -10,26 +10,46 @@ import platform
 
 json_data = {}
 light_stylesheet = """
-    QWidget {
-        background-color: white;
-        color: black;
-    }
-    QPushButton {
-        background-color: lightgray;
-        color: black;
-    }
+	QWidget {
+		background-color: white;
+		color: black;
+	}
+	QPushButton {
+		background-color: lightgray;
+		color: black;
+	}
 """
 
 dark_stylesheet = """
-    QWidget {
-        background-color: #2d2d2d;
-        color: white;
-    }
-    QPushButton {
-        background-color: #3d3d3d;
-        color: white;
-    }
+	QWidget {
+		background-color: #2d2d2d;
+		color: white;
+	}
+	QPushButton {
+		background-color: #3d3d3d;
+		color: white;
+	}
 """
+def detect_darkmode_in_windows(): 
+	try:
+		import winreg
+	except ImportError:
+		return False
+	registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
+	reg_keypath = r'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize'
+	try:
+		reg_key = winreg.OpenKey(registry, reg_keypath)
+	except FileNotFoundError:
+		return False
+
+	for i in range(1024):
+		try:
+			value_name, value, _ = winreg.EnumValue(reg_key, i)
+			if value_name == 'AppsUseLightTheme':
+				return value == 0
+		except OSError:
+			break
+	return False
 
 def detect_dark_mode():
 	if platform.system() == 'Linux':
@@ -41,14 +61,8 @@ def detect_dark_mode():
 		except:
 			pass
 	elif platform.system() == 'Windows':
-		try:
-			import winreg
-			key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
-				'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize')
-			value, _ = winreg.QueryValueEx(key, 'AppsUseLightTheme')
-			return value == 0
-		except:
-			pass
+		return detect_darkmode_in_windows()
+
 	elif platform.system() == 'Darwin':
 		try:
 			import subprocess
