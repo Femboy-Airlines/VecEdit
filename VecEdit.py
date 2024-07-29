@@ -1,18 +1,30 @@
 import sys
 import json
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QTreeView, QInputDialog
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QTreeView, QInputDialog, QPushButton, QGridLayout
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtUiTools import QUiLoader
-import os, shutil
+import os
+import shutil
 import gzip
 
 json_data = {}
+
+def resource_path(relative_path):
+	""" Get the absolute path to the resource, works for dev and for PyInstaller """
+	try:
+		# PyInstaller creates a temp folder and stores path in _MEIPASS
+		base_path = sys._MEIPASS
+	except Exception:
+		base_path = os.path.abspath(".")
+
+	return os.path.join(base_path, relative_path)
 
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super(MainWindow, self).__init__()
 		loader = QUiLoader()
-		self.ui = loader.load("main_window.ui", self)
+		ui_file_path = resource_path('main_window.ui')
+		self.ui = loader.load(ui_file_path, self)
 		
 		self.ui.import_button.clicked.connect(self.load_json_data)
 		self.ui.export_button.clicked.connect(self.export_json_data)
@@ -91,9 +103,6 @@ class MainWindow(QMainWindow):
 
 				parent.appendRow([key_item, value_item])
 
-
-				
-
 	def populate_tree_view_list(self, value_list, parent):
 		for i, value in enumerate(value_list):
 			index_item = QStandardItem(f'[{i}]')
@@ -117,7 +126,6 @@ class MainWindow(QMainWindow):
 				item.setText(new_value)
 				self.update_json_data()
 
-	
 	def update_json_data(self, parent=None, json_obj=None):
 		if parent is None:
 			parent = self.tree_model.invisibleRootItem()
@@ -198,7 +206,9 @@ class MainWindow(QMainWindow):
 			with open(temp_gz_path, 'rb') as file_in:
 				with open(file_path, 'wb') as file_out:
 					shutil.copyfileobj(file_in, file_out)
-				
+
+			shutil.rmtree(temp_folder)
+
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 	window = MainWindow()
