@@ -6,8 +6,59 @@ from PySide6.QtUiTools import QUiLoader
 import os
 import shutil
 import gzip
+import platform
 
 json_data = {}
+light_stylesheet = """
+    QWidget {
+        background-color: white;
+        color: black;
+    }
+    QPushButton {
+        background-color: lightgray;
+        color: black;
+    }
+"""
+
+dark_stylesheet = """
+    QWidget {
+        background-color: #2d2d2d;
+        color: white;
+    }
+    QPushButton {
+        background-color: #3d3d3d;
+        color: white;
+    }
+"""
+
+def detect_dark_mode():
+	if platform.system() == 'Linux':
+		try:
+			import subprocess
+			dark_mode = subprocess.check_output(
+				'gsettings get org.gnome.desktop.interface gtk-theme', shell=True).decode().strip()
+			return 'dark' in dark_mode.lower()
+		except:
+			pass
+	elif platform.system() == 'Windows':
+		try:
+			import winreg
+			key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
+				'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize')
+			value, _ = winreg.QueryValueEx(key, 'AppsUseLightTheme')
+			return value == 0
+		except:
+			pass
+	elif platform.system() == 'Darwin':
+		try:
+			import subprocess
+			dark_mode = subprocess.check_output(
+				'ddefaults read -g AppleInterfaceStyle', shell=True).decode().strip()
+			return 'dark' in dark_mode.lower()
+		except:
+			pass
+	return False
+
 
 def resource_path(relative_path):
 	""" Get the absolute path to the resource, works for dev and for PyInstaller """
@@ -212,5 +263,9 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
 	app = QApplication(sys.argv)
 	window = MainWindow()
+	if detect_dark_mode():
+		app.setStyleSheet(dark_stylesheet)
+	else:
+		app.setStyleSheet(light_stylesheet)
 	window.show()
 	sys.exit(app.exec())
