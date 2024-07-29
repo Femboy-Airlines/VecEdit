@@ -6,69 +6,105 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>591</width>
-    <height>450</height>
+    <width>850</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>591</width>
-    <height>450</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>591</width>
-    <height>450</height>
+    <width>850</width>
+    <height>650</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="gridLayoutWidget">
+  <widget class="QTabWidget" name="Tabs">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>591</width>
-     <height>31</height>
+     <width>851</width>
+     <height>651</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2">
-     <widget class="QPushButton" name="export_button">
-      <property name="text">
-       <string>Export</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="import_button">
-      <property name="text">
-       <string>Import</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QTreeView" name="JsonTree">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>571</width>
-     <height>401</height>
-    </rect>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
+   <widget class="QWidget" name="SettingsTab">
+    <attribute name="title">
+     <string>Settings</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>846</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="import_button">
+        <property name="text">
+         <string>Import</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="export_button">
+        <property name="text">
+         <string>Export</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="SimpleEditorTab">
+    <attribute name="title">
+     <string>Simple Editor</string>
+    </attribute>
+    <widget class="QTextEdit" name="textEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>250</y>
+       <width>104</width>
+       <height>70</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="ManualEditorTab">
+    <attribute name="title">
+     <string>Manual Editor</string>
+    </attribute>
+    <widget class="QTreeView" name="JsonTree">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>30</y>
+       <width>851</width>
+       <height>591</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>Tabs</tabstop>
+  <tabstop>JsonTree</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
