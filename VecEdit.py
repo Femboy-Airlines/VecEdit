@@ -473,7 +473,7 @@ class MainWindow(QMainWindow):
 		self.update_json_data_from_inputs()
 		print("Outputing file...")
 		file_dialog = QFileDialog(self)
-		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", "", "SAV Files (*.sav)")
+		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", self.ui.FilenameInput.toPlainText(), "SAV Files (*.sav)")
 		if file_path:
 			temp_folder = "vecedit_temp"
 			if not os.path.exists(temp_folder):
