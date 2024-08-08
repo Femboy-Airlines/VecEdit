@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
+    <width>861</width>
     <height>650</height>
    </rect>
   </property>
@@ -19,368 +19,1425 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTabWidget" name="Tabs">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>851</width>
-     <height>651</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="SimpleEditorTab">
-    <attribute name="title">
-     <string>Simple Editor</string>
-    </attribute>
-    <widget class="QTextEdit" name="FilenameInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>80</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="Tabs">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-    </widget>
-    <widget class="QLabel" name="FilenameLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Filename</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="SavenameLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Save Name</string>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="SavenameInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>120</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="VersionLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>200</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Version</string>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="VersionInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>200</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="PlaytimeLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Playtime</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="PlaytimeInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>241</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>9999999999.989999771118164</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="SeedLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>280</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Seed</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="SeedInput">
-     <property name="geometry">
-      <rect>
-       <x>89</x>
-       <y>280</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <number>999999999</number>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="GamemodeInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>320</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>gamemode_adventure</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>gamemode_creative</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="GamemodeLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>320</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Gamemode</string>
-     </property>
-    </widget>
-    <widget class="QWidget" name="gridLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>1</x>
-       <y>8</y>
-       <width>846</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <layout class="QGridLayout" name="ImportExportGrid">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="ImportButton">
+     <widget class="QWidget" name="SimpleEditorTab">
+      <attribute name="title">
+       <string>Simple Editor</string>
+      </attribute>
+      <widget class="QTextEdit" name="FilenameInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>80</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="FilenameLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Filename</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="SavenameLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Save Name</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="SavenameInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>120</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="VersionLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>200</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Version</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="VersionInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>200</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="PlaytimeLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>240</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Playtime</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="PlaytimeInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>241</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>9999999999.989999771118164</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="SeedLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>280</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Seed</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="SeedInput">
+       <property name="geometry">
+        <rect>
+         <x>89</x>
+         <y>280</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>999999999</number>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="GamemodeInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>320</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <item>
         <property name="text">
-         <string>Import</string>
+         <string>gamemode_adventure</string>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="ExportButton">
+       </item>
+       <item>
         <property name="text">
-         <string>Export</string>
+         <string>gamemode_creative</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="GamemodeLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>320</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Gamemode</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>-1</x>
+         <y>8</y>
+         <width>831</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="ImportExportGrid">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="ImportButton">
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="ExportButton">
+          <property name="text">
+           <string>Export</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="Line" name="Seperator">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="InfoLongLoad">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>831</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Note: Loads may take 15-60 seconds to load. If it stops responding, just be patient.</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="DescriptionLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>160</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="DescriptionInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>160</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="RegionLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>360</y>
+         <width>72</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Region</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="RegionInput">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>360</y>
+         <width>351</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="currentText">
+        <string>region_the_abyss</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>region_the_abyss</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>region_phantom_plains</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QPushButton" name="RemoveUnitsButton">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>80</y>
+         <width>161</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove enemy units</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="RemoveBuildingsButton">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>120</y>
+         <width>161</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove enemy buildings</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="UnlockResearchButton">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>160</y>
+         <width>161</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Unlock all research</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="RemoveDecryptorsButton">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>200</y>
+         <width>161</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove all decryptors</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="MapTab">
+      <attribute name="title">
+       <string>Map Editor</string>
+      </attribute>
+      <widget class="QWidget" name="infoDisplay" native="true">
+       <property name="geometry">
+        <rect>
+         <x>600</x>
+         <y>0</y>
+         <width>221</width>
+         <height>611</height>
+        </rect>
+       </property>
+       <widget class="QLabel" name="buildingDisplay">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>120</y>
+          <width>161</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>No building selected</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="Line" name="Seperator">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="QLabel" name="coordsDisplay">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>161</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>No tile selected</string>
         </property>
        </widget>
-      </item>
-     </layout>
+       <widget class="QLabel" name="resourceDisplay">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>70</y>
+          <width>161</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>No resource selected</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="factionDisplay">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>161</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>No building selected</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QTableWidget" name="mapTable">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>581</width>
+         <height>601</height>
+        </rect>
+       </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="rowCount">
+        <number>480</number>
+       </property>
+       <property name="columnCount">
+        <number>480</number>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>30</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>5</number>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderMinimumSectionSize">
+        <number>5</number>
+       </attribute>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <row/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="ManualEditorTab">
+      <attribute name="title">
+       <string>Manual Editor</string>
+      </attribute>
+      <widget class="QTreeView" name="JsonTree">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>851</width>
+         <height>621</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="SettingsTab">
+      <attribute name="title">
+       <string>Settings</string>
+      </attribute>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Dark Mode</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
-    <widget class="QLabel" name="InfoLongLoad">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>831</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Note: Loads may take 15-60 seconds to load. If it stops responding, just be patient.</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="DescriptionLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>160</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="DescriptionInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>160</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="RegionLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>360</y>
-       <width>72</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Region</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="RegionInput">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>360</y>
-       <width>351</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="currentText">
-      <string>region_the_abyss</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>region_the_abyss</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>region_phantom_plains</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QPushButton" name="RemoveUnitsButton">
-     <property name="geometry">
-      <rect>
-       <x>560</x>
-       <y>80</y>
-       <width>161</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Remove enemy units</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="RemoveBuildingsButton">
-     <property name="geometry">
-      <rect>
-       <x>560</x>
-       <y>120</y>
-       <width>161</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Remove enemy buildings</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="UnlockResearchButton">
-     <property name="geometry">
-      <rect>
-       <x>560</x>
-       <y>160</y>
-       <width>161</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Unlock all research</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="RemoveDecryptorsButton">
-     <property name="geometry">
-      <rect>
-       <x>560</x>
-       <y>200</y>
-       <width>161</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Remove all decryptors</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="ManualEditorTab">
-    <attribute name="title">
-     <string>Manual Editor</string>
-    </attribute>
-    <widget class="QTreeView" name="JsonTree">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>851</width>
-       <height>621</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="SettingsTab">
-    <attribute name="title">
-     <string>Settings</string>
-    </attribute>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>91</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Dark Mode</string>
-     </property>
-    </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <tabstops>
   <tabstop>Tabs</tabstop>
