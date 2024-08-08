@@ -354,57 +354,128 @@
          <height>611</height>
         </rect>
        </property>
-       <widget class="QLabel" name="buildingDisplay">
+       <widget class="QLabel" name="tileInfoLabel">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>120</y>
-          <width>161</width>
-          <height>21</height>
+          <y>10</y>
+          <width>47</width>
+          <height>13</height>
          </rect>
         </property>
         <property name="text">
-         <string>No building selected</string>
+         <string>Tile Info</string>
         </property>
        </widget>
-       <widget class="QLabel" name="coordsDisplay">
+       <widget class="QFrame" name="tileFrame">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>20</y>
-          <width>161</width>
-          <height>21</height>
+          <y>40</y>
+          <width>201</width>
+          <height>71</height>
          </rect>
         </property>
-        <property name="text">
-         <string>No tile selected</string>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="coordsDisplay">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>161</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>No tile selected</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="resourceDisplay">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>161</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </widget>
-       <widget class="QLabel" name="resourceDisplay">
+       <widget class="QLabel" name="buildingInfoLabel">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>70</y>
-          <width>161</width>
-          <height>21</height>
+          <y>130</y>
+          <width>47</width>
+          <height>13</height>
          </rect>
         </property>
         <property name="text">
-         <string>No resource selected</string>
+         <string>Tile Info</string>
         </property>
        </widget>
-       <widget class="QLabel" name="factionDisplay">
+       <widget class="QFrame" name="buildingFrame">
         <property name="geometry">
          <rect>
           <x>10</x>
           <y>150</y>
-          <width>161</width>
-          <height>21</height>
+          <width>201</width>
+          <height>421</height>
          </rect>
         </property>
-        <property name="text">
-         <string>No building selected</string>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="buildingDisplay">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>161</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>No building selected</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="factionDisplay">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>161</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="storageDisplay">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>80</y>
+           <width>161</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </widget>
       </widget>
       <widget class="QTableWidget" name="mapTable">

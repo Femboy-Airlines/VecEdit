@@ -487,7 +487,7 @@ class MainWindow(QMainWindow):
 		global entities
 		entities = {}
 		global unit_list
-		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone"]):
+		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone", "vec_bullet"]):
 			for tile in json_data["regions"]["region_the_abyss"]["entities"][entity]:
 				if float(tile["PosX"]//5) <= 0.0 or float(tile["PosY"]//5) <= 0.0:
 					continue
@@ -532,17 +532,24 @@ class MainWindow(QMainWindow):
 		global resources
 		self.ui.coordsDisplay.setText(f"{row},{column}")
 		try:
-			self.ui.resourceDisplay.setText(resources[f"{row},{column}"])
+			self.ui.resourceDisplay.setText("Resource: " + resources[f"{row},{column}"].split("_")[1].capitalize())
 		except KeyError:
 			self.ui.resourceDisplay.setText("No resource selected")
 
 		global entities
 		try:
 			building = entities[f"{row},{column}"]
-			self.ui.buildingDisplay.setText(building["EntityID"])
-			self.ui.factionDisplay.setText(building["FactionID"])
+			self.ui.buildingDisplay.setText("Buliding: " + building["EntityID"].split("_")[1].capitalize())
+			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
+			if building["EntityID"] == "vec_storage" or building == "vec_depot" or building == "vec_collector":
+				try:
+					storage = dict(building).get("Components",{})[0].get("OutputStorage",{})
+					self.ui.storageDisplay.setText("Storage: " + str(storage[0].get("Amount")) + " " + " ".join(storage[0].get("ID").split("_")[1:]).title())
+				except IndexError:
+					self.ui.storageDisplay.setText("No resources stored")
 		except KeyError:
 			self.ui.buildingDisplay.setText("No building selected")
+			self.ui.factionDisplay.setText("")
 
 	def update_json_data_from_inputs(self):
 		global json_data
