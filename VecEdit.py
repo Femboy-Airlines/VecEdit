@@ -541,15 +541,19 @@ class MainWindow(QMainWindow):
 			building = entities[f"{row},{column}"]
 			self.ui.buildingDisplay.setText("Buliding: " + building["EntityID"].split("_")[1].capitalize())
 			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
-			if building["EntityID"] == "vec_storage" or building == "vec_depot" or building == "vec_collector":
+			if building["EntityID"] == "vec_storage" or building["EntityID"] == "vec_depot" or building["EntityID"] == "vec_collector":
 				try:
 					storage = dict(building).get("Components",{})[0].get("OutputStorage",{})
+					print(storage)
 					self.ui.storageDisplay.setText("Storage: " + str(storage[0].get("Amount")) + " " + " ".join(storage[0].get("ID").split("_")[1:]).title())
 				except IndexError:
 					self.ui.storageDisplay.setText("No resources stored")
+			else:
+				self.ui.storageDisplay.setText("")
 		except KeyError:
 			self.ui.buildingDisplay.setText("No building selected")
 			self.ui.factionDisplay.setText("")
+			self.ui.storageDisplay.setText("")
 
 	def update_json_data_from_inputs(self):
 		global json_data
