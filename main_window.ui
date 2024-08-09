@@ -307,6 +307,45 @@
       <string>Remove enemy units</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="RemoveBuildingsButton">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>120</y>
+       <width>161</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Remove enemy buildings</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="UnlockResearchButton">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>160</y>
+       <width>161</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Unlock all research</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="RemoveDecryptorsButton">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>200</y>
+       <width>161</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Remove all decryptors</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="ManualEditorTab">
     <attribute name="title">
