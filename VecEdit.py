@@ -8,6 +8,8 @@ import shutil
 import gzip
 import platform
 
+unit_list = ["vec_sawblade", "vec_triangle", "vec_fighter", "vec_bomber", "vec_carrier", "vec_hammerhead"]
+
 if os.path.exists("./ve_log.log"):
 	os.remove("./ve_log.log")
 def log_to_file(text):
@@ -173,6 +175,24 @@ class MainWindow(QMainWindow):
 		self.ui.RemoveBuildingsButton.clicked.connect(self.remove_enemy_buildings)
 		self.ui.UnlockResearchButton.clicked.connect(self.unlock_all_research)
 		self.ui.RemoveDecryptorsButton.clicked.connect(self.remove_all_decryptors)
+
+		self.ui.mapTable.verticalHeader().setVisible(False)
+		self.ui.mapTable.horizontalHeader().setVisible(False)
+
+		self.cell_size = 30
+		self.update_cell_size()
+
+		# Zoom in and zoom out shortcuts
+		self.zoom_in_shortcut = QShortcut(QKeySequence("Ctrl+="), self)
+		self.zoom_in_shortcut.activated.connect(self.zoom_in)
+		self.zoom_in_shortcut.setEnabled(False)
+		self.zoom_out_shortcut = QShortcut(QKeySequence("Ctrl+-"), self)
+		self.zoom_out_shortcut.activated.connect(self.zoom_out)
+		self.zoom_out_shortcut.setEnabled(False)
+
+		self.ui.mapTable.cellClicked.connect(self.cell_was_clicked)
+
+		self.ui.Tabs.currentChanged.connect(self.on_tab_changed)
 	
 	def toggle_stylesheet(self, state):
 		if state == 2:
@@ -256,7 +276,13 @@ class MainWindow(QMainWindow):
 			else:
 				self.ui.RegionInput.setCurrentIndex(region_index)
 
-			print("Loading finished. Populating tree view...")
+			print("Loading finished. Processing entities...")
+
+			self.process_entities()
+			print("Entities processed. Populating map view...")
+			self.populate_map_table()
+
+			print("Map view populated. Populating tree view...")
 
 			self.populate_tree_view()
 
@@ -296,7 +322,7 @@ class MainWindow(QMainWindow):
 		self.ui.JsonTree.setColumnWidth(0, 175)
 
 	def remove_enemy_units(self):
-		unit_list = ["vec_sawblade", "vec_triangle", "vec_fighter", "vec_bomber", "vec_carrier", "vec_hammerhead"]
+		global unit_list
 		print("Removing enemy units...")
 		for unit in unit_list:
 			if unit in json_data['regions']['region_the_abyss']['entities']:
@@ -449,6 +475,74 @@ class MainWindow(QMainWindow):
 			if 'vec_decryptor' in json_data['regions']['region_phantom_plains']['worldFeatures']:
 				json_data['regions']['region_phantom_plains']['worldFeatures']['vec_decryptor'] = []
 		print("All decryptors removed.")
+	
+	def process_entities(self):
+		global resources
+		resources = {}
+		for resource in json_data["regions"]["region_the_abyss"]["resources"]:
+			for tile in json_data["regions"]["region_the_abyss"]["resources"][resource]:
+				resources[f"{tile['X']},{tile['Y']}"] = resource
+		resources = dict(sorted(resources.items()))
+
+		global entities
+		entities = {}
+		global unit_list
+		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone"]):
+			for tile in json_data["regions"]["region_the_abyss"]["entities"][entity]:
+				if float(tile["PosX"]//5) <= 0.0 or float(tile["PosY"]//5) <= 0.0:
+					continue
+				entities[f"{int(float(tile["PosX"]//5))},{int(float(tile["PosY"]//5))}"] = tile
+		entities = dict(sorted(entities.items()))
+
+		log_to_file(entities)
+
+	def populate_map_table(self):
+		# Assuming a 10x10 grid for this example, adjust as needed
+		self.ui.mapTable.setRowCount(480)
+		self.ui.mapTable.setColumnCount(480)
+
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+
+		global resources
+		for tile in resources:
+			x = int(tile.split(",")[0])
+			y = int(tile.split(",")[1])
+			resource = resources[tile]
+			item = QTableWidgetItem()
+			icon_path = script_dir + "/Images/" + resource + ".png"
+			if resource == "resource_celite" or resource == "resource_gold":
+				icon = QIcon(icon_path)
+				item.setIcon(icon)
+				if icon.isNull():
+					print("Icon is null")
+			else:
+				item.setText(resource)
+			self.ui.mapTable.setItem(y, x, item)
+
+		global entities
+		for tile in entities:
+			x = int(float(tile.split(",")[0]))
+			y = int(float(tile.split(",")[1]))
+			building = entities[tile]
+			item = QTableWidgetItem()
+			item.setText(building["EntityID"])
+			self.ui.mapTable.setItem(y, x, item)
+
+	def cell_was_clicked(self, column, row):
+		global resources
+		self.ui.coordsDisplay.setText(f"{row},{column}")
+		try:
+			self.ui.resourceDisplay.setText(resources[f"{row},{column}"])
+		except KeyError:
+			self.ui.resourceDisplay.setText("No resource selected")
+
+		global entities
+		try:
+			building = entities[f"{row},{column}"]
+			self.ui.buildingDisplay.setText(building["EntityID"])
+			self.ui.factionDisplay.setText(building["FactionID"])
+		except KeyError:
+			self.ui.buildingDisplay.setText("No building selected")
 
 	def update_json_data_from_inputs(self):
 		global json_data
@@ -473,7 +567,7 @@ class MainWindow(QMainWindow):
 		self.update_json_data_from_inputs()
 		print("Outputing file...")
 		file_dialog = QFileDialog(self)
-		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", "", "SAV Files (*.sav)")
+		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", self.ui.FilenameInput.toPlainText(), "SAV Files (*.sav)")
 		if file_path:
 			temp_folder = "vecedit_temp"
 			if not os.path.exists(temp_folder):
@@ -494,6 +588,32 @@ class MainWindow(QMainWindow):
 
 			shutil.rmtree(temp_folder)
 		print("File saved as " + file_path)
+
+	def update_cell_size(self):
+		self.ui.mapTable.verticalHeader().setDefaultSectionSize(self.cell_size)
+		self.ui.mapTable.horizontalHeader().setDefaultSectionSize(self.cell_size)
+		print("Cell size: " + str(self.cell_size))
+
+	def on_tab_changed(self, index):
+		# Enable shortcuts only if the current tab is the second tab
+		if self.ui.Tabs.currentWidget() == self.ui.MapTab:
+			self.zoom_in_shortcut.setEnabled(True)
+			self.zoom_out_shortcut.setEnabled(True)
+			
+		else:
+			self.zoom_in_shortcut.setEnabled(False)
+			self.zoom_out_shortcut.setEnabled(False)
+
+	def zoom_in(self):
+		print("Zooming in")
+		self.cell_size += 5
+		self.update_cell_size()
+
+	def zoom_out(self):
+		if self.cell_size > 10:
+			print("Zooming out")
+			self.cell_size -= 5
+			self.update_cell_size()
 
 if __name__ == "__main__":
 	loader = QUiLoader()
