@@ -203,6 +203,7 @@ class MainWindow(QMainWindow):
 			app.setStyleSheet(light_stylesheet)
 
 	def load_json_data(self):
+		self.ui.statusLabel.setText("Status: Loading file...")
 		global json_data
 		file_dialog = QFileDialog(self)
 		file_path, _ = file_dialog.getOpenFileName(self, "Open SAV File", "", "SAV Files (*.sav)")
@@ -287,6 +288,7 @@ class MainWindow(QMainWindow):
 			self.populate_tree_view()
 
 			print("Tree view populated.")
+			self.ui.statusLabel.setText("Status: File loaded.")
 
 	def populate_tree_view(self):
 		model = QStandardItemModel()
@@ -497,7 +499,6 @@ class MainWindow(QMainWindow):
 		log_to_file(entities)
 
 	def populate_map_table(self):
-		# Assuming a 10x10 grid for this example, adjust as needed
 		self.ui.mapTable.setRowCount(480)
 		self.ui.mapTable.setColumnCount(480)
 
@@ -528,6 +529,12 @@ class MainWindow(QMainWindow):
 			item.setText(building["EntityID"])
 			self.ui.mapTable.setItem(y, x, item)
 
+	def check_components(self, components, key, value):
+		for index, component in enumerate(components):
+			if component.get(key) == value:
+				return index
+		return -1
+
 	def cell_was_clicked(self, column, row):
 		global resources
 		self.ui.coordsDisplay.setText(f"{row},{column}")
@@ -539,21 +546,58 @@ class MainWindow(QMainWindow):
 		global entities
 		try:
 			building = entities[f"{row},{column}"]
-			self.ui.buildingDisplay.setText("Buliding: " + building["EntityID"].split("_")[1].capitalize())
+			self.ui.buildingDisplay.setText("Buliding: " + " ".join(building["EntityID"].split("_")[1:]).title())
 			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
-			if building["EntityID"] == "vec_storage" or building["EntityID"] == "vec_depot" or building["EntityID"] == "vec_collector":
-				try:
-					storage = dict(building).get("Components",{})[0].get("OutputStorage",{})
-					print(storage)
-					self.ui.storageDisplay.setText("Storage: " + str(storage[0].get("Amount")) + " " + " ".join(storage[0].get("ID").split("_")[1:]).title())
-				except IndexError:
-					self.ui.storageDisplay.setText("No resources stored")
-			else:
-				self.ui.storageDisplay.setText("")
+			self.ui.healthDisplay.setText("Health: NA")
 		except KeyError:
 			self.ui.buildingDisplay.setText("No building selected")
 			self.ui.factionDisplay.setText("")
-			self.ui.storageDisplay.setText("")
+			self.ui.healthDisplay.setText("")
+			self.ui.label1.setText("")
+			self.ui.label2.setText("")
+			self.ui.label3.setText("")
+			self.ui.label4.setText("")
+			self.ui.label5.setText("")
+		
+		if 'building' in locals() and building is not None and building.get("Components"):
+			L1 = ""
+			L2 = ""
+			L3 = ""
+			L4 = ""
+			L5 = ""
+			if self.check_components(building["Components"], "Type", "ResourceModule") != -1:
+				i = self.check_components(building["Components"], "Type", "ResourceModule")
+				if building["Components"][i]["HasInputStorage"]:
+					inputStorage = building["Components"][i]["InputStorage"]
+					L1 = "Input Storage: " + str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
+				if building["Components"][i]["HasOutputStorage"]:
+					outputStorage = building["Components"][i]["OutputStorage"]
+					L2 = "Output Storage: " + str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
+					if L1 == "":
+						L1 = L2
+						L2 = ""
+			if self.check_components(building["Components"], "Type", "Turret") != -1:
+				i = self.check_components(building["Components"], "Type", "ResourceModule")
+				L1 = "Barrel Rotation: " + str(building["Components"][i].get("BarrelRotation"))
+				L2 = "Cooldown: " + str(building["Components"][i].get("Cooldown"))
+				targetModes = {0: "Default", 1: "Closest", 2: "Strongest", 3: "Weakest"}
+				targetMode = targetModes.get(building["Components"][i].get("TargetMode"))
+				L3 = "Target mode: " + str(targetMode)
+			if self.check_components(building["Components"], "Type", "Decryptor") != -1:
+				i = self.check_components(building["Components"], "Type", "Decryptor")
+				L1 = "Tech: " + " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
+
+			self.ui.label1.setText(L1)
+			self.ui.label2.setText(L2)
+			self.ui.label3.setText(L3)
+			self.ui.label4.setText(L4)
+			self.ui.label4.setText(L5)
+		else:
+			self.ui.label1.setText("")
+			self.ui.label2.setText("")
+			self.ui.label3.setText("")
+			self.ui.label4.setText("")
+			self.ui.label5.setText("")
 
 	def update_json_data_from_inputs(self):
 		global json_data
