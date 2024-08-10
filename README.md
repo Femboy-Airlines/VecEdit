@@ -10,9 +10,8 @@ Use the "Import" button to import a save file.
 
 
 # Support
-- Made on & for Linux
-- Should work for Windows
-- No mac support, I'm sorry I just can't support it. You can use the .py file, I guess.
+- Made on & for Linux & Windows
+- Mac support is limited, because we have no Mac bug testers.
 
 # Common issues
 Where do I report bugs?
