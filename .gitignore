@@ -1,1 +1,4 @@
 .venv/
+ve_log.log
+com_example_save
+com_example_save.gz

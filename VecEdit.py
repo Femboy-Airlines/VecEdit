@@ -203,6 +203,7 @@ class MainWindow(QMainWindow):
 			app.setStyleSheet(light_stylesheet)
 
 	def load_json_data(self):
+		self.ui.statusLabel.setText("Status: Loading file...")
 		global json_data
 		file_dialog = QFileDialog(self)
 		file_path, _ = file_dialog.getOpenFileName(self, "Open SAV File", "", "SAV Files (*.sav)")
@@ -287,6 +288,7 @@ class MainWindow(QMainWindow):
 			self.populate_tree_view()
 
 			print("Tree view populated.")
+			self.ui.statusLabel.setText("Status: File loaded.")
 
 	def populate_tree_view(self):
 		model = QStandardItemModel()
@@ -487,7 +489,7 @@ class MainWindow(QMainWindow):
 		global entities
 		entities = {}
 		global unit_list
-		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone"]):
+		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone", "vec_bullet"]):
 			for tile in json_data["regions"]["region_the_abyss"]["entities"][entity]:
 				if float(tile["PosX"]//5) <= 0.0 or float(tile["PosY"]//5) <= 0.0:
 					continue
@@ -497,7 +499,6 @@ class MainWindow(QMainWindow):
 		log_to_file(entities)
 
 	def populate_map_table(self):
-		# Assuming a 10x10 grid for this example, adjust as needed
 		self.ui.mapTable.setRowCount(480)
 		self.ui.mapTable.setColumnCount(480)
 
@@ -528,21 +529,75 @@ class MainWindow(QMainWindow):
 			item.setText(building["EntityID"])
 			self.ui.mapTable.setItem(y, x, item)
 
+	def check_components(self, components, key, value):
+		for index, component in enumerate(components):
+			if component.get(key) == value:
+				return index
+		return -1
+
 	def cell_was_clicked(self, column, row):
 		global resources
 		self.ui.coordsDisplay.setText(f"{row},{column}")
 		try:
-			self.ui.resourceDisplay.setText(resources[f"{row},{column}"])
+			self.ui.resourceDisplay.setText("Resource: " + resources[f"{row},{column}"].split("_")[1].capitalize())
 		except KeyError:
 			self.ui.resourceDisplay.setText("No resource selected")
 
 		global entities
 		try:
 			building = entities[f"{row},{column}"]
-			self.ui.buildingDisplay.setText(building["EntityID"])
-			self.ui.factionDisplay.setText(building["FactionID"])
+			self.ui.buildingDisplay.setText("Buliding: " + " ".join(building["EntityID"].split("_")[1:]).title())
+			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
+			self.ui.healthDisplay.setText("Health: NA")
 		except KeyError:
 			self.ui.buildingDisplay.setText("No building selected")
+			self.ui.factionDisplay.setText("")
+			self.ui.healthDisplay.setText("")
+			self.ui.label1.setText("")
+			self.ui.label2.setText("")
+			self.ui.label3.setText("")
+			self.ui.label4.setText("")
+			self.ui.label5.setText("")
+		
+		if 'building' in locals() and building is not None and building.get("Components"):
+			L1 = ""
+			L2 = ""
+			L3 = ""
+			L4 = ""
+			L5 = ""
+			if self.check_components(building["Components"], "Type", "ResourceModule") != -1:
+				i = self.check_components(building["Components"], "Type", "ResourceModule")
+				if building["Components"][i]["HasInputStorage"]:
+					inputStorage = building["Components"][i]["InputStorage"]
+					L1 = "Input Storage: " + str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
+				if building["Components"][i]["HasOutputStorage"]:
+					outputStorage = building["Components"][i]["OutputStorage"]
+					L2 = "Output Storage: " + str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
+					if L1 == "":
+						L1 = L2
+						L2 = ""
+			if self.check_components(building["Components"], "Type", "Turret") != -1:
+				i = self.check_components(building["Components"], "Type", "ResourceModule")
+				L1 = "Barrel Rotation: " + str(building["Components"][i].get("BarrelRotation"))
+				L2 = "Cooldown: " + str(building["Components"][i].get("Cooldown"))
+				targetModes = {0: "Default", 1: "Closest", 2: "Strongest", 3: "Weakest"}
+				targetMode = targetModes.get(building["Components"][i].get("TargetMode"))
+				L3 = "Target mode: " + str(targetMode)
+			if self.check_components(building["Components"], "Type", "Decryptor") != -1:
+				i = self.check_components(building["Components"], "Type", "Decryptor")
+				L1 = "Tech: " + " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
+
+			self.ui.label1.setText(L1)
+			self.ui.label2.setText(L2)
+			self.ui.label3.setText(L3)
+			self.ui.label4.setText(L4)
+			self.ui.label4.setText(L5)
+		else:
+			self.ui.label1.setText("")
+			self.ui.label2.setText("")
+			self.ui.label3.setText("")
+			self.ui.label4.setText("")
+			self.ui.label5.setText("")
 
 	def update_json_data_from_inputs(self):
 		global json_data
