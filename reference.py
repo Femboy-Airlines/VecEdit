@@ -1,3 +1,73 @@
+light_stylesheet = """
+	QWidget {
+		background-color: white;
+		color: black;
+	}
+	QPushButton {
+		background-color: lightgray;
+		color: black;
+	}
+	QTabWidget::pane {
+		border: 1px solid lightgray;
+	}
+	QTabBar::tab {
+		background: lightgray;
+		color: black;
+		padding: 5px;
+	}
+	QTabBar::tab:selected {
+		background: white;
+		border: 1px solid lightgray;
+		border-bottom-color: white;
+	}
+	QTreeView {
+		background-color: white;
+		color: black;
+	}
+	QTreeView::item:selected {
+		background-color: lightgray;
+		color: black;
+	}
+"""
+
+dark_stylesheet = """
+	QWidget {
+		background-color: #2d2d2d;
+		color: white;
+	}
+	QPushButton {
+		background-color: #3d3d3d;
+		color: white;
+	}
+	QTabWidget::pane {
+		border: 1px solid #3d3d3d;
+	}
+	QTabBar::tab {
+		background: #3d3d3d;
+		color: white;
+		padding: 5px;
+	}
+	QTabBar::tab:selected {
+		background: #2d2d2d;
+		border: 1px solid #3d3d3d;
+		border-bottom-color: #2d2d2d;
+	}
+	QTreeView {
+		background-color: #2d2d2d;
+		color: white;
+	}
+	QTreeView::item:selected {
+		background-color: #3d3d3d;
+		color: white;
+	}
+	QHeaderView::section {
+		background-color: #3d3d3d;
+		color: white;
+		padding: 4px;
+		border: 1px solid #3d3d3d;
+	}
+"""
+
 unit_list = [
     "vec_sawblade",
     "vec_triangle",
