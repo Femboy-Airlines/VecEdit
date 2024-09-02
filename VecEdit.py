@@ -7,8 +7,7 @@ import os
 import shutil
 import gzip
 import platform
-
-unit_list = ["vec_sawblade", "vec_triangle", "vec_fighter", "vec_bomber", "vec_carrier", "vec_hammerhead"]
+import reference as ref # separate reference file for a cleaner main file
 
 if os.path.exists("./ve_log.log"):
 	os.remove("./ve_log.log")
@@ -324,9 +323,8 @@ class MainWindow(QMainWindow):
 		self.ui.JsonTree.setColumnWidth(0, 175)
 
 	def remove_enemy_units(self):
-		global unit_list
 		print("Removing enemy units...")
-		for unit in unit_list:
+		for unit in ref.unit_list:
 			if unit in json_data['regions']['region_the_abyss']['entities']:
 				json_data['regions']['region_the_abyss']['entities'][unit] = [unit for unit in json_data['regions']['region_the_abyss']['entities'][unit] if unit.get("FactionID") != "faction_redscar"]
 			if 'region_phantom_plains' in json_data['regions']:
@@ -335,39 +333,8 @@ class MainWindow(QMainWindow):
 		print("Enemy units removed.")
 
 	def remove_enemy_buildings(self):
-		building_list = [
-			"vec_storage",
-			"vec_wall",
-			"vec_reclaimer",
-			"vec_builder_port",
-			"vec_barrier",
-			"vec_cargo_drone",
-			"vec_cargo_port",
-			"vec_shotgunner",
-			"vec_foundry",
-			"vec_node_reactor",
-			"vec_builder_drone",
-			"vec_sweeper",
-			"vec_ranger",
-			"vec_collector",
-			"vec_depot",
-			"vec_liquidator",
-			"vec_manufacturer",
-			"vec_laborator",
-			"vec_buffer",
-			"vec_repeater",
-			"vec_basic_core",
-			"vec_hive_core",
-			"vec_hive_cell",
-			"vec_core_assembler",
-			"vec_artillery",
-			"vec_ammo_forge",
-			"vec_bullet_shield",
-			"vec_pulsar",
-			"vec_generator"
-			]
 		print("Removing enemy buildings...")
-		for building in building_list:
+		for building in ref.building_list:
 			if building in json_data['regions']['region_the_abyss']['entities']:
 				json_data['regions']['region_the_abyss']['entities'][building] = [building for building in json_data['regions']['region_the_abyss']['entities'][building] if building.get("FactionID") != "faction_redscar"]
 			# if 'region_phantom_plains' in json_data['regions']:
@@ -378,95 +345,7 @@ class MainWindow(QMainWindow):
 	def unlock_all_research(self):
 		print("Unlocking all research...")
 		json_data['researchTechResources'] = []
-		json_data['completedResearchTechs'] = [
-			"tech_main",
-			"tech_cargo_port",
-			"tech_collector",
-			"tech_gilded_crystal",
-			"tech_gold",
-			"tech_laboratory",
-			"tech_liquid_essence",
-			"tech_storage",
-			"tech_foundry",
-			"tech_liquidator",
-			"tech_sweeper",
-			"tech_redeemer",
-			"tech_manufacturer",
-			"tech_ammo_forge",
-			"tech_core_assembler",
-			"tech_artillery",
-			"tech_striker",
-			"tech_depot",
-			"tech_phantom_core",
-			"tech_arcana_steel",
-			"tech_pulsar",
-			"tech_essence",
-			"tech_repeater",
-			"tech_builder_port",
-			"tech_crystallite",
-			"tech_node_reactor",
-			"tech_ranger",
-			"tech_reclaimer",
-			"tech_shotgunner",
-			"tech_wall",
-			"tech_glimmering_gem",
-			"tech_plasma_round",
-			"tech_artillery_shell",
-			"tech_ether_shard",
-			"tech_buffer",
-			"tech_filter",
-			"tech_lumina",
-			"tech_arcanium_battery",
-			"tech_barrier",
-			"tech_liquid_lumina",
-			"tech_iridium",
-			"tech_reactive_cellite",
-			"tech_kinetic_cellite",
-			"tech_nitrium",
-			"tech_driller",
-			"tech_celite",
-			"tech_generator",
-			"tech_beacon",
-			"tech_bullet_shield",
-			"tech_decorations",
-			"tech_courier_port",
-			"tech_fabricator_port",
-			"tech_enforced_tile",
-			"tech_caution_tile",
-			"tech_circular_tile",
-			"tech_basic_missile",
-			"tech_plains_gateway",
-			"tech_phantom_tech",
-			"tech_abyss_gateway",
-			"tech_frigid_gateway",
-			"tech_liquid_nitrium",
-			"tech_arcana_battery",
-			"tech_illuminator",
-			"tech_spotter",
-			"tech_phantomite_fragment",
-			"tech_alcheminium",
-			"tech_voidstone",
-			"tech_osmium",
-			"tech_reanimated_shard",
-			"tech_tesla",
-			"tech_phantom_lab",
-			"tech_alchemized_iridium",
-			"tech_gargoyle",
-			"tech_alchemator",
-			"tech_abyss_fragment",
-			"tech_abyss_fragment",
-			"tech_dark_gold",
-			"tech_dark_builder_port",
-			"tech_atomizer",
-			"tech_energy_wall",
-			"tech_alchemized_nitrium",
-			"tech_shaded_gem",
-			"tech_abyss_core",
-			"tech_alchemized_crystallite",
-			"tech_radar",
-			"tech_orbitar",
-			"tech_scyther"
-			]
+		json_data['completedResearchTechs'] = ref.all_techs
 		print("All research unlocked.")
 
 	def remove_all_decryptors(self):
