@@ -197,6 +197,16 @@ class MainWindow(QMainWindow):
 		self.ui.updateMapButton.clicked.connect(self.update_json_map)
 		self.ui.updateManualButton.clicked.connect(self.update_json_manual)
 		self.ui.reloadButton.clicked.connect(self.reload_editors)
+	
+		self.map_update_shortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Return), self)
+		self.map_update_shortcut.activated.connect(self.update_map_tile)
+		self.map_update_shortcut.setEnabled(False)
+
+		self.ui.input1.setVisible(False)
+		self.ui.input2.setVisible(False)
+		self.ui.input3.setVisible(False)
+		self.ui.input4.setVisible(False)
+		self.ui.input5.setVisible(False)
 
 	def toggle_stylesheet(self, state):
 		if state == 2:
@@ -452,65 +462,115 @@ class MainWindow(QMainWindow):
 		global resources
 		self.ui.coordsDisplay.setText(f"{row},{column}")
 		try:
-			self.ui.resourceDisplay.setText("Resource: " + resources[f"{row},{column}"].split("_")[1].capitalize())
+			self.ui.resourceInput.setText(" ".join(resources[f"{row},{column}"].split("_")[1:]).title())
 		except KeyError:
-			self.ui.resourceDisplay.setText("No resource selected")
+			self.ui.resourceInput.setText("No resource selected")
 
-		global entities
+		global buildings
 		try:
-			building = entities[f"{row},{column}"]
-			self.ui.buildingDisplay.setText("Buliding: " + " ".join(building["EntityID"].split("_")[1:]).title())
-			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
-			self.ui.healthDisplay.setText("Health: NA")
+			building = buildings[f"{row},{column}"]
+			self.ui.buildingInput.setText(" ".join(building["EntityID"].split("_")[1:]).title())
+			self.ui.factionInput.setText(building["FactionID"].split("_")[1].capitalize())
+			self.ui.healthInput.setValue(0)
 		except KeyError:
-			self.ui.buildingDisplay.setText("No building selected")
-			self.ui.factionDisplay.setText("")
-			self.ui.healthDisplay.setText("")
-			self.ui.label1.setText("")
-			self.ui.label2.setText("")
-			self.ui.label3.setText("")
-			self.ui.label4.setText("")
-			self.ui.label5.setText("")
+			self.ui.buildingInput.setText("No building selected")
+			self.ui.factionInput.setText("")
+			self.ui.healthInput.setValue(0)
 		
+		info = {}
 		if 'building' in locals() and building is not None and building.get("Components"):
-			L1 = ""
-			L2 = ""
-			L3 = ""
-			L4 = ""
-			L5 = ""
 			if self.check_components(building["Components"], "Type", "ResourceModule") != -1:
 				i = self.check_components(building["Components"], "Type", "ResourceModule")
 				if building["Components"][i]["HasInputStorage"]:
 					inputStorage = building["Components"][i]["InputStorage"]
-					L1 = "Input Storage: " + str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
+					info["Input Storage:"] = str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
 				if building["Components"][i]["HasOutputStorage"]:
 					outputStorage = building["Components"][i]["OutputStorage"]
-					L2 = "Output Storage: " + str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
-					if L1 == "":
-						L1 = L2
-						L2 = ""
+					info["Output Storage:"] = str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
 			if self.check_components(building["Components"], "Type", "Turret") != -1:
 				i = self.check_components(building["Components"], "Type", "ResourceModule")
-				L1 = "Barrel Rotation: " + str(building["Components"][i].get("BarrelRotation"))
-				L2 = "Cooldown: " + str(building["Components"][i].get("Cooldown"))
+				info["Barrel Rotation:"] = str(building["Components"][i].get("BarrelRotation"))
+				info["Cooldown:"] = str(building["Components"][i].get("Cooldown"))
 				targetModes = {0: "Default", 1: "Closest", 2: "Strongest", 3: "Weakest"}
 				targetMode = targetModes.get(building["Components"][i].get("TargetMode"))
-				L3 = "Target mode: " + str(targetMode)
+				info["Target mode:"] = str(targetMode)
 			if self.check_components(building["Components"], "Type", "Decryptor") != -1:
 				i = self.check_components(building["Components"], "Type", "Decryptor")
-				L1 = "Tech: " + " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
+				info["Tech:"] = " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
 
-			self.ui.label1.setText(L1)
-			self.ui.label2.setText(L2)
-			self.ui.label3.setText(L3)
-			self.ui.label4.setText(L4)
-			self.ui.label4.setText(L5)
+		for i in range(5):
+			label = getattr(self.ui, f"label{i+1}")
+			label.setText("")
+			input = getattr(self.ui, f"input{i+1}")
+			input.setVisible(False)
+
+		if len(info) != 0:
+			for index, key in enumerate(info):
+				label = getattr(self.ui, f"label{index+1}")
+				label.setText(key)
+				input = getattr(self.ui, f"input{index+1}")
+				input.setVisible(True)
+				input.setText(info[key])
+
+	def update_map_tile(self):
+		global resources
+		global buildings
+		if self.ui.coordsDisplay.text() == "No tile selected":
+			return
+		
+		# Get x and y of current cell
+		x = int(self.ui.coordsDisplay.text().split(",")[0])
+		y = int(self.ui.coordsDisplay.text().split(",")[1])
+		# Print for debugging
+		print(f"Updating tile {x},{y}")
+
+		# Update tile resource
+		resource_name = self.ui.resourceInput.toPlainText().title()
+		print(f"Resource: {resource_name}")
+
+		# If not showing "No resource selected" and resource is valid, update resource list
+		resource = "resource_" + resource_name.lower().replace(" ", "_")
+		if self.ui.resourceInput.toPlainText() != "No resource selected" and (resource in ref.resource_list or resource_name == ""):
+			if self.ui.resourceInput.toPlainText() == "":
+				resources.pop(f"{x},{y}", None)
+				self.ui.mapTable.setItem(y, x, None)
+			else:
+				resources[f"{x},{y}"] = resource
+		
+			# Write new resource to current cell
+			global resource_images
+			item = QTableWidgetItem()
+			try:
+				icon = QIcon(resource_images[resources[f"{x},{y}"]])
+				item.setIcon(icon)
+				item.setTextAlignment(Qt.AlignLeft)
+				if icon.isNull():
+					print(resources[f"{x},{y}"])
+					print("Icon is null")
+				self.ui.mapTable.setItem(y, x, item)
+			except KeyError:
+				item.setText(resource_name.lower())
+				self.ui.mapTable.setItem(y, x, item)
 		else:
-			self.ui.label1.setText("")
-			self.ui.label2.setText("")
-			self.ui.label3.setText("")
-			self.ui.label4.setText("")
-			self.ui.label5.setText("")
+			print("Resource not valid")
+
+		# TODO: Update building stuff
+		# Update tile building
+		building_name = self.ui.buildingInput.toPlainText().title()
+		print(f"Building: {building_name}")
+		building = "vec_" + building_name.lower().replace(" ", "_")
+		if self.ui.resourceInput.toPlainText() != "No building selected" and (building in ref.building_list or building_name == ""):
+			if building_name == "":
+				print("None")
+				buildings.pop(f"{x},{y}", None)
+				self.ui.mapTable.setItem(y, x, None)
+				# TODO:
+				# Currently overwrites resource icon if it exists
+			
+
+
+		self.cell_was_clicked(y, x)
+
 	def update_json_simple(self):
 		self.ui.statusLabel.setText("Status: Updating JSON from simple...")
 		QApplication.processEvents()
@@ -633,6 +693,7 @@ class MainWindow(QMainWindow):
 	def update_cell_size(self):
 		self.ui.mapTable.verticalHeader().setDefaultSectionSize(self.cell_size)
 		self.ui.mapTable.horizontalHeader().setDefaultSectionSize(self.cell_size)
+		self.ui.mapTable.setIconSize(QSize(self.cell_size, self.cell_size))
 		print("Cell size: " + str(self.cell_size))
 
 	def on_tab_changed(self, index):
@@ -640,9 +701,11 @@ class MainWindow(QMainWindow):
 		if self.ui.Tabs.currentWidget() == self.ui.MapTab:
 			self.zoom_in_shortcut.setEnabled(True)
 			self.zoom_out_shortcut.setEnabled(True)
+			self.map_update_shortcut.setEnabled(True)
 		else:
 			self.zoom_in_shortcut.setEnabled(False)
 			self.zoom_out_shortcut.setEnabled(False)
+			self.map_update_shortcut.setEnabled(False)
 
 	def zoom_in(self):
 		print("Zooming in")
