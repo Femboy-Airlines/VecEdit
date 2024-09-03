@@ -517,7 +517,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>51</width>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
@@ -682,16 +682,6 @@
            <x>10</x>
            <y>430</y>
            <width>261</width>
-           <height>30</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="buildingInput">
-         <property name="geometry">
-          <rect>
-           <x>60</x>
-           <y>5</y>
-           <width>211</width>
            <height>30</height>
           </rect>
          </property>

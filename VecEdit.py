@@ -400,14 +400,15 @@ class MainWindow(QMainWindow):
 		global buildings
 		try:
 			building = buildings[f"{row},{column}"]
-			self.ui.buildingInput.setText(" ".join(building["EntityID"].split("_")[1:]).title())
+			self.ui.buildingLabel.setText("Buliding: " + " ".join(building["EntityID"].split("_")[1:]).title())
 			self.ui.factionInput.setText(building["FactionID"].split("_")[1].capitalize())
 			self.ui.healthInput.setValue(0)
 		except KeyError:
-			self.ui.buildingInput.setText("No building selected")
+			self.ui.buildingLabel.setText("Building: No building selected")
 			self.ui.factionInput.setText("")
 			self.ui.healthInput.setValue(0)
 		
+		# TODO: Add some coments and make it look better since this is a mess
 		info = {}
 		if 'building' in locals() and building is not None and building.get("Components"):
 			if self.check_components(building["Components"], "Type", "ResourceModule") != -1:
@@ -424,7 +425,7 @@ class MainWindow(QMainWindow):
 				info["Cooldown:"] = str(building["Components"][i].get("Cooldown"))
 				targetModes = {0: "Default", 1: "Closest", 2: "Strongest", 3: "Weakest"}
 				targetMode = targetModes.get(building["Components"][i].get("TargetMode"))
-				info["Target mode:"] = str(targetMode)
+				info["Target Mode:"] = str(targetMode)
 			if self.check_components(building["Components"], "Type", "Decryptor") != -1:
 				i = self.check_components(building["Components"], "Type", "Decryptor")
 				info["Tech:"] = " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
@@ -485,20 +486,48 @@ class MainWindow(QMainWindow):
 		else:
 			print("Resource not valid")
 
-		# TODO: Update building stuff
-		# Update tile building
-		building_name = self.ui.buildingInput.toPlainText().title()
-		print(f"Building: {building_name}")
-		building = "vec_" + building_name.lower().replace(" ", "_")
-		if self.ui.resourceInput.toPlainText() != "No building selected" and (building in ref.building_list or building_name == ""):
-			if building_name == "":
-				print("None")
-				buildings.pop(f"{x},{y}", None)
-				self.ui.mapTable.setItem(y, x, None)
-				# TODO:
-				# Currently overwrites resource icon if it exists
-			
+		info = {}
+		building = buildings[f"{x},{y}"]
 
+		# Update faction
+		faction = self.ui.factionInput.toPlainText().lower()
+		if faction in ["redscar", "player"]:
+			faction = "faction_" + faction
+		elif faction in ["faction_redscar", "faction_player"]:
+			faction = faction
+		else:
+			faction = "faction_player"
+		building["FactionID"] = faction
+		
+		# TODO: Once health gets stored in save file, add some code for it. Should be pretty simple
+
+		# Get all attributes
+		for i in range(5):
+			label = getattr(self.ui, f"label{i+1}")
+			input = getattr(self.ui, f"input{i+1}")
+			if input.isVisible():
+				key = label.text().replace(" ", "").replace(":", "")
+				value = input.toPlainText()
+				info[key] = value
+		
+		for key in info:
+			value = info[key]
+			if key in ["InputStorage", "OutputStorage"]:
+				i = self.check_components(building["Components"], "Type", "ResourceModule")
+				# Fallback in case they put no resource. Should probably change this, but it works for now (hopefully)
+				if value == "":
+					value = "0 Gold"
+				value = [{"ID": "resource_" + value.split(" ")[1].lower(), "Amount": int(value.split(" ")[0])}]
+			elif key in ["BarrelRotation", "Cooldown", "TargetMode"]:
+				i = self.check_components(building["Components"], "Type", "Turret")
+				if key in ["BarrelRotation", "Cooldown"]:
+					value = float(value)
+				elif key in ["TargetMode"]:
+					targetModes = {'Default': 0, 'Closest': 1, 'Strongest': 2, 'Weakest': 3}
+					value = targetModes.get(value)
+					if value not in targetModes:
+						value = 0
+			building["Components"][i][key] = value
 
 		self.cell_was_clicked(y, x)
 
@@ -539,8 +568,17 @@ class MainWindow(QMainWindow):
 			json_data["regions"]["region_the_abyss"]["resources"][resource].append({"X": x, "Y": y})
 		
 		# For buildings
-		# TODO: Implement this
 		global buildings
+		for tile in buildings:
+			x = int(tile.split(",")[0])
+			y = int(tile.split(",")[1])
+			building = buildings[tile]["EntityID"]
+			if building not in json_data["regions"]["region_the_abyss"]["entities"]:
+				json_data["regions"]["region_the_abyss"]["entitiies"][resource] = []
+			for thing in json_data["regions"]["region_the_abyss"]["entities"][building]:
+				if thing["PosX"] == x and thing["PosY"] == y:
+					thing = tile
+
 		self.ui.statusLabel.setText("Status: JSON updated from map.")
 
 	def update_json_manual(self):
