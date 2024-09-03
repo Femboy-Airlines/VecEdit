@@ -2,3 +2,4 @@
 ve_log.log
 com_example_save
 com_example_save.gz
+__pycache__
