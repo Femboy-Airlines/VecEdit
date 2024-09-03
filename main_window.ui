@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>861</width>
-    <height>650</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -345,12 +345,64 @@
         <rect>
          <x>470</x>
          <y>50</y>
-         <width>121</width>
+         <width>291</width>
          <height>16</height>
         </rect>
        </property>
        <property name="text">
         <string>Status: Waiting for file</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="updateSimpleButton">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>420</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Update JSON from simple editor</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="updateManualButton">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>520</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Update JSON from manual editor</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="updateMapButton">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>470</y>
+         <width>191</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Update JSON from map editor  </string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="reloadButton">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>470</y>
+         <width>121</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Reload editors</string>
        </property>
       </widget>
      </widget>
@@ -361,10 +413,10 @@
       <widget class="QWidget" name="infoDisplay" native="true">
        <property name="geometry">
         <rect>
-         <x>600</x>
+         <x>520</x>
          <y>0</y>
-         <width>221</width>
-         <height>611</height>
+         <width>301</width>
+         <height>621</height>
         </rect>
        </property>
        <widget class="QLabel" name="tileInfoLabel">
@@ -385,8 +437,8 @@
          <rect>
           <x>10</x>
           <y>40</y>
-          <width>201</width>
-          <height>71</height>
+          <width>281</width>
+          <height>81</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -408,17 +460,27 @@
           <string>No tile selected</string>
          </property>
         </widget>
-        <widget class="QLabel" name="resourceDisplay">
+        <widget class="QLabel" name="resourceLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>40</y>
-           <width>161</width>
+           <width>51</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string/>
+          <string>Resource:</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="resourceInput">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>35</y>
+           <width>201</width>
+           <height>30</height>
+          </rect>
          </property>
         </widget>
        </widget>
@@ -440,8 +502,8 @@
          <rect>
           <x>10</x>
           <y>150</y>
-          <width>201</width>
-          <height>421</height>
+          <width>281</width>
+          <height>451</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -450,38 +512,38 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <widget class="QLabel" name="buildingDisplay">
+        <widget class="QLabel" name="buildingLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>161</width>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>No building selected</string>
+          <string>Buliding:</string>
          </property>
         </widget>
-        <widget class="QLabel" name="factionDisplay">
+        <widget class="QLabel" name="factionLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>40</y>
-           <width>161</width>
+           <y>45</y>
+           <width>41</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string/>
+          <string>Faction:</string>
          </property>
         </widget>
         <widget class="QLabel" name="label1">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>100</y>
-           <width>161</width>
+           <y>115</y>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
@@ -489,51 +551,101 @@
           <string/>
          </property>
         </widget>
-        <widget class="QLabel" name="healthDisplay">
+        <widget class="QLabel" name="healthLabel">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>70</y>
-           <width>161</width>
+           <y>85</y>
+           <width>41</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string/>
+          <string>Health:</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="factionInput">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>40</y>
+           <width>211</width>
+           <height>30</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="healthInput">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>80</y>
+           <width>211</width>
+           <height>30</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="input1">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>145</y>
+           <width>261</width>
+           <height>30</height>
+          </rect>
          </property>
         </widget>
         <widget class="QLabel" name="label2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>130</y>
-           <width>161</width>
+           <y>185</y>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="input2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>215</y>
+           <width>261</width>
+           <height>30</height>
+          </rect>
          </property>
         </widget>
         <widget class="QLabel" name="label3">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>160</y>
-           <width>161</width>
+           <y>255</y>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="input3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>285</y>
+           <width>261</width>
+           <height>30</height>
+          </rect>
          </property>
         </widget>
         <widget class="QLabel" name="label4">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>190</y>
-           <width>161</width>
+           <y>325</y>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
@@ -541,17 +653,37 @@
           <string/>
          </property>
         </widget>
+        <widget class="QTextEdit" name="input4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>355</y>
+           <width>261</width>
+           <height>30</height>
+          </rect>
+         </property>
+        </widget>
         <widget class="QLabel" name="label5">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>220</y>
-           <width>161</width>
+           <y>395</y>
+           <width>261</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="input5">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>430</y>
+           <width>261</width>
+           <height>30</height>
+          </rect>
          </property>
         </widget>
        </widget>
@@ -561,8 +693,8 @@
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>581</width>
-         <height>601</height>
+         <width>491</width>
+         <height>591</height>
         </rect>
        </property>
        <property name="dragEnabled">
@@ -1589,7 +1721,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>Tabs</tabstop>
   <tabstop>JsonTree</tabstop>
  </tabstops>
  <resources/>
