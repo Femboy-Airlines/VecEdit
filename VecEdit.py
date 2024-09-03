@@ -539,8 +539,8 @@ class MainWindow(QMainWindow):
 		json_data['Name'] = self.ui.SavenameInput.toPlainText()
 		json_data['Description'] = self.ui.DescriptionInput.toPlainText()
 		json_data['Version'] = self.ui.VersionInput.toPlainText()
-		json_data['WorldTime'] = self.ui.PlaytimeInput.value()
-		json_data['Seed'] = self.ui.SeedInput.value()
+		json_data['WorldTime'] = float(self.ui.PlaytimeInput.value())
+		json_data['Seed'] = int(self.ui.SeedInput.value())
 		
 		gamemode_index = self.ui.GamemodeInput.currentIndex()
 		gamemode_string = self.ui.GamemodeInput.itemText(gamemode_index)
