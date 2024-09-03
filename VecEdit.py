@@ -3,12 +3,12 @@ import json
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtUiTools import *
+from PySide6.QtCore import *
 import os
 import shutil
 import gzip
 import platform
-
-unit_list = ["vec_sawblade", "vec_triangle", "vec_fighter", "vec_bomber", "vec_carrier", "vec_hammerhead"]
+import reference as ref # separate reference file for a cleaner main file
 
 if os.path.exists("./ve_log.log"):
 	os.remove("./ve_log.log")
@@ -193,7 +193,22 @@ class MainWindow(QMainWindow):
 		self.ui.mapTable.cellClicked.connect(self.cell_was_clicked)
 
 		self.ui.Tabs.currentChanged.connect(self.on_tab_changed)
+
+		self.ui.updateSimpleButton.clicked.connect(self.update_json_simple)
+		self.ui.updateMapButton.clicked.connect(self.update_json_map)
+		self.ui.updateManualButton.clicked.connect(self.update_json_manual)
+		self.ui.reloadButton.clicked.connect(self.reload_editors)
 	
+		self.map_update_shortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Return), self)
+		self.map_update_shortcut.activated.connect(self.update_map_tile)
+		self.map_update_shortcut.setEnabled(False)
+
+		self.ui.input1.setVisible(False)
+		self.ui.input2.setVisible(False)
+		self.ui.input3.setVisible(False)
+		self.ui.input4.setVisible(False)
+		self.ui.input5.setVisible(False)
+
 	def toggle_stylesheet(self, state):
 		if state == 2:
 			print("Dark mode enabled")
@@ -232,101 +247,180 @@ class MainWindow(QMainWindow):
 			with open(temp_json_path, 'r') as file:
 				json_data = json.load(file)
 
-			filename_string = json_data['FileName']
-			print(f"String is set. | {filename_string}")
-			self.ui.FilenameInput.setText(filename_string)
-
-			savename_string = json_data['Name']
-			print(f"String is set. | {savename_string}")
-			self.ui.SavenameInput.setText(savename_string)
-
-			description_string = json_data['Description']
-			print(f"String is set. | {description_string}")
-			self.ui.DescriptionInput.setText(description_string)
-
-			version_string = json_data['Version']
-			print(f"Float is set. | {version_string}")
-			self.ui.VersionInput.setText(version_string)
-
-			playtime_double = json_data['WorldTime']
-			print(f"Float is set. | {playtime_double}")
-			self.ui.PlaytimeInput.setValue(playtime_double)
-
-			seed_int = json_data['Seed']
-			print(f"Int is set. | {seed_int}")
-			self.ui.SeedInput.setValue(seed_int)
-
-			gamemode_data = json_data['GamemodeData']
-			gamemode_string = gamemode_data["ID"]
-			print(f"String is set. | {gamemode_string}")
-
-			# Find the index of the gamemode_string
-			gamemode_index = self.ui.GamemodeInput.findText(gamemode_string)
-			if gamemode_index == -1:
-				print(f"Error: gamemode_string '{gamemode_string}' not found in GamemodeInput.")
-			else:
-				self.ui.GamemodeInput.setCurrentIndex(gamemode_index)
-
-			region_string = json_data['ActiveRegion']
-			print(f"String is set. | {region_string}")
-
-			# Find the index of the gamemode_string
-			region_index = self.ui.RegionInput.findText(region_string)
-			if region_index == -1:
-				print(f"Error: region_string '{region_string}' not found in RegionInput.")
-			else:
-				self.ui.RegionInput.setCurrentIndex(region_index)
-
-			print("Loading finished. Processing entities...")
-
+			print("Populating simple view...")
+			self.populate_simple_view()
+			print("Simple view populated. Processing entities...")
 			self.process_entities()
 			print("Entities processed. Populating map view...")
 			self.populate_map_table()
-
 			print("Map view populated. Populating tree view...")
-
 			self.populate_tree_view()
-
 			print("Tree view populated.")
 			self.ui.statusLabel.setText("Status: File loaded.")
+
+	def populate_simple_view(self):
+		global json_data
+		filename_string = json_data['FileName']
+		print(f"String is set. | {filename_string}")
+		self.ui.FilenameInput.setText(filename_string)
+
+		savename_string = json_data['Name']
+		print(f"String is set. | {savename_string}")
+		self.ui.SavenameInput.setText(savename_string)
+
+		description_string = json_data['Description']
+		print(f"String is set. | {description_string}")
+		self.ui.DescriptionInput.setText(description_string)
+
+		version_string = json_data['Version']
+		print(f"Float is set. | {version_string}")
+		self.ui.VersionInput.setText(version_string)
+
+		playtime_float = float(json_data['WorldTime'])
+		print(f"Float is set. | {playtime_float}")
+		self.ui.PlaytimeInput.setValue(playtime_float)
+
+		seed_int = int(json_data['Seed'])
+		print(f"Int is set. | {seed_int}")
+		self.ui.SeedInput.setValue(seed_int)
+
+		gamemode_data = json_data['GamemodeData']
+		gamemode_string = gamemode_data["ID"]
+		print(f"String is set. | {gamemode_string}")
+
+		# Find the index of the gamemode_string
+		gamemode_index = self.ui.GamemodeInput.findText(gamemode_string)
+		if gamemode_index == -1:
+			print(f"Error: gamemode_string '{gamemode_string}' not found in GamemodeInput.")
+		else:
+			self.ui.GamemodeInput.setCurrentIndex(gamemode_index)
+
+		region_string = json_data['ActiveRegion']
+		print(f"String is set. | {region_string}")
+
+		# Find the index of the gamemode_string
+		region_index = self.ui.RegionInput.findText(region_string)
+		if region_index == -1:
+			print(f"Error: region_string '{region_string}' not found in RegionInput.")
+		else:
+			self.ui.RegionInput.setCurrentIndex(region_index)
+
+	def process_entities(self):
+		global resources
+		resources = {}
+		for resource in json_data["regions"]["region_the_abyss"]["resources"]:
+			for tile in json_data["regions"]["region_the_abyss"]["resources"][resource]:
+				resources[f"{tile['X']},{tile['Y']}"] = resource
+		resources = dict(sorted(resources.items()))
+
+		global buildings
+		buildings = {}
+		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in ref.unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone", "vec_bullet"]):
+			for tile in json_data["regions"]["region_the_abyss"]["entities"][entity]:
+				if float(tile["PosX"])//5 <= 0.0 or float(tile["PosY"])//5 <= 0.0:
+					continue
+				buildings[f"{int(float(tile["PosX"])//5)},{int(float(tile["PosY"])//5)}"] = tile
+		buildings = dict(sorted(buildings.items()))
+
+		# Get dir of script
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+
+		# List of resources we have an image for
+		resource_image_list = ["resource_gold", "resource_crystallite", "resource_essence", "resource_iridium", "resource_lumina", "resource_nitrium", "resource_celite", "resource_osmium", "resource_gilded_crystal", "resource_ether_shard", "resource_arcana_steel", "resource_voidstone", "resource_phantomite", "resource_dark_gold", "resource_alcheminium", "resource_abyssminite"]
+		global resource_images
+		resource_images = {}
+		for resource in resource_image_list:
+			resource_images[resource] = QPixmap(script_dir + "/Images/" + resource + ".png")
+		
+		# List of buildings we have an image for
+		building_image_list = ["barrier", "repeater"]
+		global building_images
+		building_images = {}
+		for building in building_image_list:
+			building_images[building] = QPixmap(script_dir + "/Images/" + building + ".png")
+		log_to_file(building_images)
+
+	def populate_map_table(self):
+		self.ui.mapTable.setRowCount(480)
+		self.ui.mapTable.setColumnCount(480)
+
+		global resource_images
+		global resources
+		for tile in resources:
+			x = int(tile.split(",")[0])
+			y = int(tile.split(",")[1])
+			item = QTableWidgetItem()
+			try:
+				icon = QIcon(resource_images[resources[tile]])
+				item.setIcon(icon)
+				item.setTextAlignment(Qt.AlignLeft)
+				if icon.isNull():
+					print(resources[tile])
+					print("Icon is null")
+			except KeyError:
+				pass
+			item.setText(resources[tile][9:])
+			self.ui.mapTable.setItem(y, x, item)
+
+		global building_images
+		global buildings
+		for tile in buildings:
+			x = int(float(tile.split(",")[0]))
+			y = int(float(tile.split(",")[1]))
+			item = QTableWidgetItem()
+			building_id = buildings[tile]["EntityID"][4:]
+			try:
+				icon = QIcon(building_images[building_id])
+				item.setIcon(icon)
+				item.setTextAlignment(Qt.AlignLeft)
+				if icon.isNull():
+					print(buildings[tile])
+					print("Icon is null")
+			except KeyError:
+				pass
+			item.setText(building_id)
+			self.ui.mapTable.setItem(y, x, item)
 
 	def populate_tree_view(self):
 		model = QStandardItemModel()
 		model.setHorizontalHeaderLabels(['Key', 'Value'])
 
 		def add_items(parent, elements):
-			if isinstance(elements, dict):
-				for key, value in elements.items():
-					key_item = QStandardItem(key)
-					if isinstance(value, (dict, list)):
-						value_item = QStandardItem("")
-						parent.appendRow([key_item, value_item])
-						add_items(key_item, value)
-					else:
-						value_item = QStandardItem(str(value))
-						parent.appendRow([key_item, value_item])
-			elif isinstance(elements, list):
-				for index, value in enumerate(elements):
-					key_item = QStandardItem(f"[{index}]")
-					if isinstance(value, (dict, list)):
-						value_item = QStandardItem("")
-						parent.appendRow([key_item, value_item])
-						add_items(key_item, value)
-					else:
-						value_item = QStandardItem(str(value))
-						parent.appendRow([key_item, value_item])
+			stack = [(parent, elements)]
+			while stack:
+				parent, ellements = stack.pop()
+				if isinstance(elements, dict):
+					for key, value in elements.items():
+						key_item = QStandardItem(key)
+						if isinstance(value, (dict, list)):
+							value_item = QStandardItem("")
+							parent.appendRow([key_item, value_item])
+							add_items(key_item, value)
+						else:
+							value_item = QStandardItem(str(value))
+							parent.appendRow([key_item, value_item])
+				elif isinstance(elements, list):
+					for index, value in enumerate(elements):
+						key_item = QStandardItem(f"[{index}]")
+						if isinstance(value, (dict, list)):
+							value_item = QStandardItem("")
+							parent.appendRow([key_item, value_item])
+							add_items(key_item, value)
+						else:
+							value_item = QStandardItem(str(value))
+							parent.appendRow([key_item, value_item])
 
 		root_item = model.invisibleRootItem()
 		add_items(root_item, json_data)
 
 		self.ui.JsonTree.setModel(model)
 
-		self.ui.JsonTree.setColumnWidth(0, 175)
+		self.ui.JsonTree.setColumnWidth(0, 200)
+		self.ui.JsonTree.setColumnWidth(1, 500)
 
 	def remove_enemy_units(self):
-		global unit_list
 		print("Removing enemy units...")
-		for unit in unit_list:
+		for unit in ref.unit_list:
 			if unit in json_data['regions']['region_the_abyss']['entities']:
 				json_data['regions']['region_the_abyss']['entities'][unit] = [unit for unit in json_data['regions']['region_the_abyss']['entities'][unit] if unit.get("FactionID") != "faction_redscar"]
 			if 'region_phantom_plains' in json_data['regions']:
@@ -335,39 +429,8 @@ class MainWindow(QMainWindow):
 		print("Enemy units removed.")
 
 	def remove_enemy_buildings(self):
-		building_list = [
-			"vec_storage",
-			"vec_wall",
-			"vec_reclaimer",
-			"vec_builder_port",
-			"vec_barrier",
-			"vec_cargo_drone",
-			"vec_cargo_port",
-			"vec_shotgunner",
-			"vec_foundry",
-			"vec_node_reactor",
-			"vec_builder_drone",
-			"vec_sweeper",
-			"vec_ranger",
-			"vec_collector",
-			"vec_depot",
-			"vec_liquidator",
-			"vec_manufacturer",
-			"vec_laborator",
-			"vec_buffer",
-			"vec_repeater",
-			"vec_basic_core",
-			"vec_hive_core",
-			"vec_hive_cell",
-			"vec_core_assembler",
-			"vec_artillery",
-			"vec_ammo_forge",
-			"vec_bullet_shield",
-			"vec_pulsar",
-			"vec_generator"
-			]
 		print("Removing enemy buildings...")
-		for building in building_list:
+		for building in ref.building_list:
 			if building in json_data['regions']['region_the_abyss']['entities']:
 				json_data['regions']['region_the_abyss']['entities'][building] = [building for building in json_data['regions']['region_the_abyss']['entities'][building] if building.get("FactionID") != "faction_redscar"]
 			# if 'region_phantom_plains' in json_data['regions']:
@@ -378,95 +441,7 @@ class MainWindow(QMainWindow):
 	def unlock_all_research(self):
 		print("Unlocking all research...")
 		json_data['researchTechResources'] = []
-		json_data['completedResearchTechs'] = [
-			"tech_main",
-			"tech_cargo_port",
-			"tech_collector",
-			"tech_gilded_crystal",
-			"tech_gold",
-			"tech_laboratory",
-			"tech_liquid_essence",
-			"tech_storage",
-			"tech_foundry",
-			"tech_liquidator",
-			"tech_sweeper",
-			"tech_redeemer",
-			"tech_manufacturer",
-			"tech_ammo_forge",
-			"tech_core_assembler",
-			"tech_artillery",
-			"tech_striker",
-			"tech_depot",
-			"tech_phantom_core",
-			"tech_arcana_steel",
-			"tech_pulsar",
-			"tech_essence",
-			"tech_repeater",
-			"tech_builder_port",
-			"tech_crystallite",
-			"tech_node_reactor",
-			"tech_ranger",
-			"tech_reclaimer",
-			"tech_shotgunner",
-			"tech_wall",
-			"tech_glimmering_gem",
-			"tech_plasma_round",
-			"tech_artillery_shell",
-			"tech_ether_shard",
-			"tech_buffer",
-			"tech_filter",
-			"tech_lumina",
-			"tech_arcanium_battery",
-			"tech_barrier",
-			"tech_liquid_lumina",
-			"tech_iridium",
-			"tech_reactive_cellite",
-			"tech_kinetic_cellite",
-			"tech_nitrium",
-			"tech_driller",
-			"tech_celite",
-			"tech_generator",
-			"tech_beacon",
-			"tech_bullet_shield",
-			"tech_decorations",
-			"tech_courier_port",
-			"tech_fabricator_port",
-			"tech_enforced_tile",
-			"tech_caution_tile",
-			"tech_circular_tile",
-			"tech_basic_missile",
-			"tech_plains_gateway",
-			"tech_phantom_tech",
-			"tech_abyss_gateway",
-			"tech_frigid_gateway",
-			"tech_liquid_nitrium",
-			"tech_arcana_battery",
-			"tech_illuminator",
-			"tech_spotter",
-			"tech_phantomite_fragment",
-			"tech_alcheminium",
-			"tech_voidstone",
-			"tech_osmium",
-			"tech_reanimated_shard",
-			"tech_tesla",
-			"tech_phantom_lab",
-			"tech_alchemized_iridium",
-			"tech_gargoyle",
-			"tech_alchemator",
-			"tech_abyss_fragment",
-			"tech_abyss_fragment",
-			"tech_dark_gold",
-			"tech_dark_builder_port",
-			"tech_atomizer",
-			"tech_energy_wall",
-			"tech_alchemized_nitrium",
-			"tech_shaded_gem",
-			"tech_abyss_core",
-			"tech_alchemized_crystallite",
-			"tech_radar",
-			"tech_orbitar",
-			"tech_scyther"
-			]
+		json_data['completedResearchTechs'] = ref.all_techs
 		print("All research unlocked.")
 
 	def remove_all_decryptors(self):
@@ -477,57 +452,6 @@ class MainWindow(QMainWindow):
 			if 'vec_decryptor' in json_data['regions']['region_phantom_plains']['worldFeatures']:
 				json_data['regions']['region_phantom_plains']['worldFeatures']['vec_decryptor'] = []
 		print("All decryptors removed.")
-	
-	def process_entities(self):
-		global resources
-		resources = {}
-		for resource in json_data["regions"]["region_the_abyss"]["resources"]:
-			for tile in json_data["regions"]["region_the_abyss"]["resources"][resource]:
-				resources[f"{tile['X']},{tile['Y']}"] = resource
-		resources = dict(sorted(resources.items()))
-
-		global entities
-		entities = {}
-		global unit_list
-		for entity in (entity for entity in json_data["regions"]["region_the_abyss"]["entities"] if entity not in unit_list and entity not in ["vec_cargo_drone", "vec_builder_drone", "vec_courier_drone", "vec_fabricator_drone", "vec_dark_builder_drone", "vec_bullet"]):
-			for tile in json_data["regions"]["region_the_abyss"]["entities"][entity]:
-				if float(tile["PosX"]//5) <= 0.0 or float(tile["PosY"]//5) <= 0.0:
-					continue
-				entities[f"{int(float(tile["PosX"]//5))},{int(float(tile["PosY"]//5))}"] = tile
-		entities = dict(sorted(entities.items()))
-
-		log_to_file(entities)
-
-	def populate_map_table(self):
-		self.ui.mapTable.setRowCount(480)
-		self.ui.mapTable.setColumnCount(480)
-
-		script_dir = os.path.dirname(os.path.abspath(__file__))
-
-		global resources
-		for tile in resources:
-			x = int(tile.split(",")[0])
-			y = int(tile.split(",")[1])
-			resource = resources[tile]
-			item = QTableWidgetItem()
-			icon_path = script_dir + "/Images/" + resource + ".png"
-			if resource == "resource_celite" or resource == "resource_gold":
-				icon = QIcon(icon_path)
-				item.setIcon(icon)
-				if icon.isNull():
-					print("Icon is null")
-			else:
-				item.setText(resource)
-			self.ui.mapTable.setItem(y, x, item)
-
-		global entities
-		for tile in entities:
-			x = int(float(tile.split(",")[0]))
-			y = int(float(tile.split(",")[1]))
-			building = entities[tile]
-			item = QTableWidgetItem()
-			item.setText(building["EntityID"])
-			self.ui.mapTable.setItem(y, x, item)
 
 	def check_components(self, components, key, value):
 		for index, component in enumerate(components):
@@ -539,67 +463,118 @@ class MainWindow(QMainWindow):
 		global resources
 		self.ui.coordsDisplay.setText(f"{row},{column}")
 		try:
-			self.ui.resourceDisplay.setText("Resource: " + resources[f"{row},{column}"].split("_")[1].capitalize())
+			self.ui.resourceInput.setText(" ".join(resources[f"{row},{column}"].split("_")[1:]).title())
 		except KeyError:
-			self.ui.resourceDisplay.setText("No resource selected")
+			self.ui.resourceInput.setText("No resource selected")
 
-		global entities
+		global buildings
 		try:
-			building = entities[f"{row},{column}"]
-			self.ui.buildingDisplay.setText("Buliding: " + " ".join(building["EntityID"].split("_")[1:]).title())
-			self.ui.factionDisplay.setText("Faction: " + building["FactionID"].split("_")[1].capitalize())
-			self.ui.healthDisplay.setText("Health: NA")
+			building = buildings[f"{row},{column}"]
+			self.ui.buildingInput.setText(" ".join(building["EntityID"].split("_")[1:]).title())
+			self.ui.factionInput.setText(building["FactionID"].split("_")[1].capitalize())
+			self.ui.healthInput.setValue(0)
 		except KeyError:
-			self.ui.buildingDisplay.setText("No building selected")
-			self.ui.factionDisplay.setText("")
-			self.ui.healthDisplay.setText("")
-			self.ui.label1.setText("")
-			self.ui.label2.setText("")
-			self.ui.label3.setText("")
-			self.ui.label4.setText("")
-			self.ui.label5.setText("")
+			self.ui.buildingInput.setText("No building selected")
+			self.ui.factionInput.setText("")
+			self.ui.healthInput.setValue(0)
 		
+		info = {}
 		if 'building' in locals() and building is not None and building.get("Components"):
-			L1 = ""
-			L2 = ""
-			L3 = ""
-			L4 = ""
-			L5 = ""
 			if self.check_components(building["Components"], "Type", "ResourceModule") != -1:
 				i = self.check_components(building["Components"], "Type", "ResourceModule")
 				if building["Components"][i]["HasInputStorage"]:
 					inputStorage = building["Components"][i]["InputStorage"]
-					L1 = "Input Storage: " + str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
+					info["Input Storage:"] = str(inputStorage[0].get("Amount")) + " " + " ".join(inputStorage[0].get("ID").split("_")[1:]).title()
 				if building["Components"][i]["HasOutputStorage"]:
 					outputStorage = building["Components"][i]["OutputStorage"]
-					L2 = "Output Storage: " + str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
-					if L1 == "":
-						L1 = L2
-						L2 = ""
+					info["Output Storage:"] = str(outputStorage[0].get("Amount")) + " " + " ".join(outputStorage[0].get("ID").split("_")[1:]).title()
 			if self.check_components(building["Components"], "Type", "Turret") != -1:
 				i = self.check_components(building["Components"], "Type", "ResourceModule")
-				L1 = "Barrel Rotation: " + str(building["Components"][i].get("BarrelRotation"))
-				L2 = "Cooldown: " + str(building["Components"][i].get("Cooldown"))
+				info["Barrel Rotation:"] = str(building["Components"][i].get("BarrelRotation"))
+				info["Cooldown:"] = str(building["Components"][i].get("Cooldown"))
 				targetModes = {0: "Default", 1: "Closest", 2: "Strongest", 3: "Weakest"}
 				targetMode = targetModes.get(building["Components"][i].get("TargetMode"))
-				L3 = "Target mode: " + str(targetMode)
+				info["Target mode:"] = str(targetMode)
 			if self.check_components(building["Components"], "Type", "Decryptor") != -1:
 				i = self.check_components(building["Components"], "Type", "Decryptor")
-				L1 = "Tech: " + " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
+				info["Tech:"] = " ".join(building["Components"][i].get("TechID").split("_")[1:]).title()
 
-			self.ui.label1.setText(L1)
-			self.ui.label2.setText(L2)
-			self.ui.label3.setText(L3)
-			self.ui.label4.setText(L4)
-			self.ui.label4.setText(L5)
+		for i in range(5):
+			label = getattr(self.ui, f"label{i+1}")
+			label.setText("")
+			input = getattr(self.ui, f"input{i+1}")
+			input.setVisible(False)
+
+		if len(info) != 0:
+			for index, key in enumerate(info):
+				label = getattr(self.ui, f"label{index+1}")
+				label.setText(key)
+				input = getattr(self.ui, f"input{index+1}")
+				input.setVisible(True)
+				input.setText(info[key])
+
+	def update_map_tile(self):
+		global resources
+		global buildings
+		if self.ui.coordsDisplay.text() == "No tile selected":
+			return
+		
+		# Get x and y of current cell
+		x = int(self.ui.coordsDisplay.text().split(",")[0])
+		y = int(self.ui.coordsDisplay.text().split(",")[1])
+		# Print for debugging
+		print(f"Updating tile {x},{y}")
+
+		# Update tile resource
+		resource_name = self.ui.resourceInput.toPlainText().title()
+		print(f"Resource: {resource_name}")
+
+		# If not showing "No resource selected" and resource is valid, update resource list
+		resource = "resource_" + resource_name.lower().replace(" ", "_")
+		if self.ui.resourceInput.toPlainText() != "No resource selected" and (resource in ref.resource_list or resource_name == ""):
+			if self.ui.resourceInput.toPlainText() == "":
+				resources.pop(f"{x},{y}", None)
+				self.ui.mapTable.setItem(y, x, None)
+			else:
+				resources[f"{x},{y}"] = resource
+		
+			# Write new resource to current cell
+			global resource_images
+			item = QTableWidgetItem()
+			try:
+				icon = QIcon(resource_images[resources[f"{x},{y}"]])
+				item.setIcon(icon)
+				item.setTextAlignment(Qt.AlignLeft)
+				if icon.isNull():
+					print(resources[f"{x},{y}"])
+					print("Icon is null")
+				self.ui.mapTable.setItem(y, x, item)
+			except KeyError:
+				item.setText(resource_name.lower())
+				self.ui.mapTable.setItem(y, x, item)
 		else:
-			self.ui.label1.setText("")
-			self.ui.label2.setText("")
-			self.ui.label3.setText("")
-			self.ui.label4.setText("")
-			self.ui.label5.setText("")
+			print("Resource not valid")
 
-	def update_json_data_from_inputs(self):
+		# TODO: Update building stuff
+		# Update tile building
+		building_name = self.ui.buildingInput.toPlainText().title()
+		print(f"Building: {building_name}")
+		building = "vec_" + building_name.lower().replace(" ", "_")
+		if self.ui.resourceInput.toPlainText() != "No building selected" and (building in ref.building_list or building_name == ""):
+			if building_name == "":
+				print("None")
+				buildings.pop(f"{x},{y}", None)
+				self.ui.mapTable.setItem(y, x, None)
+				# TODO:
+				# Currently overwrites resource icon if it exists
+			
+
+
+		self.cell_was_clicked(y, x)
+
+	def update_json_simple(self):
+		self.ui.statusLabel.setText("Status: Updating JSON from simple...")
+		QApplication.processEvents()
 		global json_data
 		json_data['FileName'] = self.ui.FilenameInput.toPlainText()
 		json_data['Name'] = self.ui.SavenameInput.toPlainText()
@@ -615,11 +590,83 @@ class MainWindow(QMainWindow):
 		region_index = self.ui.RegionInput.currentIndex()
 		region_string = self.ui.RegionInput.itemText(region_index)
 		json_data['ActiveRegion'] = region_string
+		self.ui.statusLabel.setText("Status: JSON updated from simple.")
+
+	def update_json_map(self):
+		self.ui.statusLabel.setText("Status: Updating JSON from map...")
+		QApplication.processEvents()
+		global json_data
+		
+		# For resources
+		global resources
+		json_data["regions"]["region_the_abyss"]["resources"] = {}
+		for tile in resources:
+			x = int(tile.split(",")[0])
+			y = int(tile.split(",")[1])
+			resource = resources[tile]
+			if resource not in json_data["regions"]["region_the_abyss"]["resources"]:
+				json_data["regions"]["region_the_abyss"]["resources"][resource] = []
+			json_data["regions"]["region_the_abyss"]["resources"][resource].append({"X": x, "Y": y})
+		
+		# For buildings
+		# TODO: Implement this
+		global buildings
+		self.ui.statusLabel.setText("Status: JSON updated from map.")
+
+	def update_json_manual(self):
+		self.ui.statusLabel.setText("Status: Updating JSON from manual...")
+		QApplication.processEvents()
+		model = self.ui.JsonTree.model()
+		root_item = model.invisibleRootItem()
+
+		def tree_to_dict(item):
+			data = {}
+			for row in range(item.rowCount()):
+				key_item = item.child(row, 0)
+				value_item = item.child(row, 1)
+				key = key_item.text()
+				if key_item.hasChildren():
+					if key_item.child(0).text().startswith("["):  # List detected
+						data[key] = tree_to_list(key_item)
+					else:  # Dict detected
+						data[key] = tree_to_dict(key_item)
+				else:
+					data[key] = value_item.text()
+			return data
+
+		def tree_to_list(item):
+			data = []
+			for row in range(item.rowCount()):
+				child_item = item.child(row, 0)
+				if child_item.hasChildren():
+					if child_item.child(0).text().startswith("["):  # Nested list
+						data.append(tree_to_list(child_item))
+					else:  # Nested dict
+						data.append(tree_to_dict(child_item))
+				else:
+					data.append(child_item.text())
+			return data
+
+		global json_data
+		json_data = tree_to_dict(root_item)
+		self.ui.statusLabel.setText("Status: JSON updated from manual.")
+
+	def reload_editors(self):
+		self.ui.statusLabel.setText("Status: Reloading editors...")
+		QApplication.processEvents()
+		print("Populating simple view...")
+		self.populate_simple_view()
+		print("Simple view populated. Processing entities...")
+		self.process_entities()
+		print("Entities processed. Populating map view...")
+		self.populate_map_table()
+		print("Map view populated. Populating tree view...")
+		self.populate_tree_view()
+		print("Tree view populated.")
+		self.ui.statusLabel.setText("Status: Editors reloaded.")
 
 	def export_json_data(self):
 		global json_data
-		print("Updating json data...")
-		self.update_json_data_from_inputs()
 		print("Outputing file...")
 		file_dialog = QFileDialog(self)
 		file_path, _ = file_dialog.getSaveFileName(self, "Save JSON File", self.ui.FilenameInput.toPlainText(), "SAV Files (*.sav)")
@@ -647,6 +694,7 @@ class MainWindow(QMainWindow):
 	def update_cell_size(self):
 		self.ui.mapTable.verticalHeader().setDefaultSectionSize(self.cell_size)
 		self.ui.mapTable.horizontalHeader().setDefaultSectionSize(self.cell_size)
+		self.ui.mapTable.setIconSize(QSize(self.cell_size, self.cell_size))
 		print("Cell size: " + str(self.cell_size))
 
 	def on_tab_changed(self, index):
@@ -654,10 +702,11 @@ class MainWindow(QMainWindow):
 		if self.ui.Tabs.currentWidget() == self.ui.MapTab:
 			self.zoom_in_shortcut.setEnabled(True)
 			self.zoom_out_shortcut.setEnabled(True)
-			
+			self.map_update_shortcut.setEnabled(True)
 		else:
 			self.zoom_in_shortcut.setEnabled(False)
 			self.zoom_out_shortcut.setEnabled(False)
+			self.map_update_shortcut.setEnabled(False)
 
 	def zoom_in(self):
 		print("Zooming in")
