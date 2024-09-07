@@ -263,7 +263,7 @@ class MainWindow(QMainWindow):
 			resource_images[resource] = QPixmap(script_dir + "/Images/" + resource + ".png")
 		
 		# List of buildings we have an image for
-		building_image_list = ["barrier", "repeater"]
+		building_image_list = ["vec_barrier", "vec_basic_core", "vec_ranger", "vec_reclaimer", "vec_repeater", "vec_resource_port", "vec_shotgunner", "vec_sprayer", "vec_wall"]
 		global building_images
 		building_images = {}
 		for building in building_image_list:
@@ -298,7 +298,7 @@ class MainWindow(QMainWindow):
 			x = int(float(tile.split(",")[0]))
 			y = int(float(tile.split(",")[1]))
 			item = QTableWidgetItem()
-			building_id = buildings[tile]["EntityID"][4:]
+			building_id = buildings[tile]["EntityID"]
 			try:
 				icon = QIcon(building_images[building_id])
 				item.setIcon(icon)
@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
 					print("Icon is null")
 			except KeyError:
 				pass
-			item.setText(building_id)
+			item.setText(building_id[4:])
 			self.ui.mapTable.setItem(y, x, item)
 
 	def populate_tree_view(self):
