@@ -1,6 +1,6 @@
 # Overview
 A save editor for Vectorio Remake written in Python.
-Made for people who aren't programmers!
+Made for people who aren't programmers! <3
 
 # How to use
 Go to the Releases tab, download the file named "VecEdit_<your os name\>"
